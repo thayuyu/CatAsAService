@@ -28,9 +28,13 @@
 
         }
 
+        // Get a random cat with no filters
         public string GetRandomCat()
         {
+            Address = $"{Address}?type={type}&width={width}&height={height}";
             return Address;
         }
+
+
     }
 }
