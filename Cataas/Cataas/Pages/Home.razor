@@ -1,5 +1,69 @@
-﻿@page "/"
+﻿@using Services
+@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Cataas</PageTitle>
+
+<div class="d-flex justify-content-center">
+    <img src="@imgSrc" height="500" width="500" class="border border-black"/>
+    <br />
+   
+</div>
+<div class="d-flex justify-content-center">
+<button @onclick="@GeneratePic">Generate Picture</button>
+</div>
+
+<select class="form-select form-select-lg mb-3" aria-label="Large select example"
+        @onchange="SelectedChoiseChanged">
+    <option value="mono">Mono</option>
+    <option value="negate">Negate</option>
+    <option value="custom">Custom</option>
+</select>
+
+@if (choice == "custom")
+{
+    <label for="customRangeBrightness" class="form-label">Brightness</label>
+    <input type="range" class="form-range" id="customRangeBrightness" min="-100" max="100" @bind-value="@brightnessValue">
+    <label for="customRangeBrightness">@brightnessValue</label>
+    <br />
+
+    <label for="customRangeSaturation" class="form-label">Saturation</label>
+    <input type="range" class="form-range" id="customRangeSaturation" min="-100" max="100" @bind-value="@saturationValue">
+    <label for="customRangeSaturation">@saturationValue</label>
+    <br />
+
+    <label for="customRangeBrightness" class="form-label">Hue</label>
+    <input type="range" class="form-range" id="customRangeBrightness" min="-180" max="180" @bind-value="@hueValue">
+    <label for="customRangeBrightness">@hueValue</label>
+    <br />
+}
+
+<label for="customText" class="form-label">Custom Text</label>
+<input type="text" class="form-control" id="customText" @bind-value="@customText">
 
 
+<!-- <img src="https://cataas.com/cat?filter=custom&hue=50" /> -->
+@code {
+    API cat = new();
+
+    private string imgSrc = "https://www.brillen-sehhilfen.de/optik/image/weiss-white.png";
+
+    public int brightnessValue = 0;
+    public int saturationValue = 0;
+    public int hueValue = 0;
+    public string customText = "";
+    public string choice = "standard";
+
+
+    public void SelectedChoiseChanged(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            choice = (string)e.Value;
+        }
+    }
+
+    public void GeneratePic()
+    {
+        imgSrc = cat.GetRandomCat();
+    }
+}
