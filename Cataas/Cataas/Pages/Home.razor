@@ -5,10 +5,14 @@
 <PageTitle>Cataas</PageTitle>
 
 <div class="d-flex justify-content-center">
+    <h1>Cat as a Service</h1>
+</div>
+
+<div class="d-flex justify-content-center">
   
     @if (link == null)
     {
-        <img src="@imgSrc" height="500" width="500" class="border border-black" />
+        <img src="@imgSrc" height="500" width="500" class="border border-4" />
         <br />
     }
     else
@@ -20,46 +24,58 @@
    
 </div>
 <div class="d-flex justify-content-center">
-<button type="button" class="btn btn-primary btn-lg" @onclick="@GeneratePic">Generate Picture</button>
+<button type="button" class="btn btn-primary btn-lg m-3" @onclick="@GeneratePic">Generate Picture</button>
 </div>
 
-<select class="form-select form-select-lg mb-3" aria-label="Large select example"
-        @onchange="SelectedChoiceChanged">
-    <option value="standard">Standard</option>
-    <option value="mono">Mono</option>
-    <option value="negate">Negate</option>
-    <option value="custom">Custom</option>
-</select>
+<div class="d-flex justify-content-center">
+    <select class="form-select form-select-lg mb-3 w-50" aria-label="Large select example"
+            @onchange="SelectedChoiceChanged">
+        <option value="standard">Standard</option>
+        <option value="mono">Mono</option>
+        <option value="negate">Negate</option>
+        <option value="custom">Custom</option>
+    </select>
+</div
 
 @if (choice == "custom")
 {
     if(CustomChoice == "")
     {
-        <select class="form-select form-select-lg mb-3" aria-label="Large select example"
-                @onchange="SelectedCustomChanged">
-            <option value="standard">Choose</option>
-            <option value="BSH">BSH</option>
-            <option value="RGB">RGB</option>
-        </select>
+        <div class="d-flex justify-content-center">
+            <select class="form-select form-select-lg mb-3 w-25" aria-label="Large select example"
+                    @onchange="SelectedCustomChanged">
+                <option value="standard">Choose</option>
+                <option value="BSH">BSH</option>
+                <option value="RGB">RGB</option>
+            </select>
+        </div>
     }
 
     <!--BSH-->
     if(CustomChoice == "BSH")
     {
-
-        <label for="customRangeBrightness" class="form-label">Brightness</label>
-        <input type="range" class="form-range" id="customRangeBrightness" min="0" max="100" @bind-value="@brightnessValue" >
-        <label for="customRangeBrightness">@brightnessValue</label>
+        <!--Brightness-->
+        <label for="customRangeBrightness" class="form-label d-flex justify-content-center">Brightness</label>
+        <div class="d-flex justify-content-center">
+            <input type="range" class="form-range w-75" id="customRangeBrightness" min="0" max="100" @bind-value="@brightnessValue" >
+        </div>
+        <label class="d-flex justify-content-center" for="customRangeBrightness">@brightnessValue</label>
         <br />
 
-        <label for="customRangeSaturation" class="form-label">Saturation</label>
-        <input type="range" class="form-range" id="customRangeSaturation" min="0" max="100" @bind-value="@saturationValue">
-        <label for="customRangeSaturation">@saturationValue</label>
+        <!--Saturation-->
+        <label for="customRangeSaturation" class="form-label d-flex justify-content-center">Saturation</label>
+        <div class="d-flex justify-content-center">
+        <input type="range" class="form-range w-75" id="customRangeSaturation" min="0" max="100" @bind-value="@saturationValue">
+        </div>
+        <label class="d-flex justify-content-center" for="customRangeSaturation">@saturationValue</label>
         <br />
 
-        <label for="customRangeHue" class="form-label">Hue</label>
-        <input type="range" class="form-range" id="customRangeHue" min="0" max="180" @bind-value="@hueValue">
-        <label for="customRangeHue">@hueValue</label>
+        <!--Hue-->
+        <label for="customRangeHue" class="form-label d-flex justify-content-center">Hue</label>
+        <div class="d-flex justify-content-center">
+        <input type="range" class="form-range w-75" id="customRangeHue" min="0" max="180" @bind-value="@hueValue">
+        </div>
+        <label class="d-flex justify-content-center" for="customRangeHue">@hueValue</label>
         <br />
 
         <div class="d-flex justify-content-center">
@@ -78,20 +94,31 @@
     <!--Coloring-->
     if(CustomChoice == "RGB")
     {
-        <label for="customRangeRed" class="form-label">Red</label>
-        <input type="range" class="form-range" id="customRangeRed" min="0" max="255" @bind-value="@RedValue">
-        <label for="customRangeBrightness">@RedValue</label>
+        <!--Red-->
+        <label for="customRangeRed" class="form-label d-flex justify-content-center">Red</label>
+        <div class="d-flex justify-content-center">
+            <input type="range" class="form-range w-75" id="customRangeRed" min="0" max="255" @bind-value="@RedValue">
+        </div>
+        <label for="customRangeBrightness" class="d-flex justify-content-center">@RedValue</label>
         <br />
 
-        <label for="customRangeGreen" class="form-label">Green</label>
-        <input type="range" class="form-range" id="customRangeGreen" min="0" max="255" @bind-value="@GreenValue">
-        <label for="customRangeSaturation">@GreenValue</label>
+        <!--Green-->
+        <label for="customRangeGreen" class="form-label d-flex justify-content-center">Green</label>
+        <div class="d-flex justify-content-center">
+            <input type="range" class="form-range w-75" id="customRangeGreen" min="0" max="255" @bind-value="@GreenValue">
+        </div>
+        <label for="customRangeSaturation" class="d-flex justify-content-center">@GreenValue</label>
         <br />
 
-        <label for="customRangeBlue" class="form-label">Blue</label>
-        <input type="range" class="form-range" id="customRangeBlue" min="0" max="255" @bind-value="@BlueValue">
-        <label for="customRangeBrightness">@BlueValue</label>
+        <!--Blue-->
+        <label for="customRangeBlue" class="form-label d-flex justify-content-center">Blue</label>
+        <div class="d-flex justify-content-center">
+            <input type="range" class="form-range w-75" id="customRangeBlue" min="0" max="255" @bind-value="@BlueValue">
+       </div>
+        <label class="d-flex justify-content-center" for="customRangeBrightness">@BlueValue</label>
         <br />
+
+
 
         <div class="d-flex justify-content-center">
             <button type="button" class="btn btn-outline-success m-3" @onclick="@OnClickSaveRGB">Save</button>
@@ -114,9 +141,9 @@
     public string choice = "standard";
     public string CustomChoice = "";
 
-    public int? brightnessValue = 50;
-    public int? saturationValue = 50;
-    public int? hueValue = 50;
+    public int? brightnessValue = 0;
+    public int? saturationValue = 0;
+    public int? hueValue = 0;
 
     public int? RedValue = 0;
     public int? GreenValue = 0;
