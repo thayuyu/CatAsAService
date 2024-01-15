@@ -8,7 +8,7 @@
         // type of the picture
         private const string type = "square";
         // width and height 
-        private const int width = 500;
+        private int width = 500;
         private const int height = 500;
 
         // Constructor
@@ -17,6 +17,7 @@
         // Get a random cat without filters
         public string GetRandomCat()
         {
+            
             return $"{Address}?type={type}&width={width}&height={height}";
         }
         
@@ -34,7 +35,15 @@
         /// <returns>Link of a random filtered cat picture</returns>
         public string GetFilterCat(string Filter, string? Says, int? Brightness, int? Saturation, int? Hue, int? Red, int? Green, int? Blue) 
         {
-            if (Says == null)
+            if (width == 500)
+            {
+                width = 501;
+            }
+            else
+            {
+                width = 500;
+            }
+            if (Says == "")
             {
                 if (Filter == "custom")
                 {
@@ -51,8 +60,12 @@
                 {
                     return Address + $"?type={type}&width={width}&height={height}&filter={Filter}";
                 }
+                else if (Filter == "standard")
+                {
+                    GetRandomCat();
+                }
             }
-            else if (Says != null)
+            else if (Says != "")
             {
                 if (Filter == "custom")
                 {
@@ -68,6 +81,10 @@
                 else if (Filter == "mono" || Filter == "negate")
                 {
                     return Address + $"/says/{Says}" + $"?type={type}&width={width}&height={height}&filter={Filter}";
+                }
+                else if (Filter == "standard")
+                {
+                    GetRandomCat();
                 }
             }
             return "https://i.pinimg.com/736x/24/57/04/24570452fbe5544aaf0cae82cab47449.jpg";

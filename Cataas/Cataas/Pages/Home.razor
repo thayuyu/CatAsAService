@@ -13,7 +13,8 @@
 </div>
 
 <select class="form-select form-select-lg mb-3" aria-label="Large select example"
-        @onchange="SelectedChoiseChanged">
+        @onchange="SelectedChoiceChanged">
+    <option value="standard">Standard</option>
     <option value="mono">Mono</option>
     <option value="negate">Negate</option>
     <option value="custom">Custom</option>
@@ -31,9 +32,25 @@
     <label for="customRangeSaturation">@saturationValue</label>
     <br />
 
-    <label for="customRangeBrightness" class="form-label">Hue</label>
-    <input type="range" class="form-range" id="customRangeBrightness" min="-180" max="180" @bind-value="@hueValue">
-    <label for="customRangeBrightness">@hueValue</label>
+    <label for="customRangeHue" class="form-label">Hue</label>
+    <input type="range" class="form-range" id="customRangeHue" min="-180" max="180" @bind-value="@hueValue">
+    <label for="customRangeHue">@hueValue</label>
+    <br />
+
+    <!--Coloring-->
+    <label for="customRangeRed" class="form-label">Red</label>
+    <input type="range" class="form-range" id="customRangeRed" min="0" max="255" @bind-value="@RedValue">
+    <label for="customRangeBrightness">@RedValue</label>
+    <br />
+
+    <label for="customRangeGreen" class="form-label">Green</label>
+    <input type="range" class="form-range" id="customRangeGreen" min="0" max="255" @bind-value="@GreenValue">
+    <label for="customRangeSaturation">@GreenValue</label>
+    <br />
+
+    <label for="customRangeBlue" class="form-label">Blue</label>
+    <input type="range" class="form-range" id="customRangeBlue" min="0" max="255" @bind-value="@BlueValue">
+    <label for="customRangeBrightness">@BlueValue</label>
     <br />
 }
 
@@ -53,8 +70,12 @@
     public string customText = "";
     public string choice = "standard";
 
+    public int RedValue = 127;
+    public int GreenValue = 127;
+    public int BlueValue = 127;
 
-    public void SelectedChoiseChanged(ChangeEventArgs e)
+
+    public void SelectedChoiceChanged(ChangeEventArgs e)
     {
         if (e.Value is not null)
         {
@@ -64,6 +85,13 @@
 
     public void GeneratePic()
     {
-        imgSrc = cat.GetRandomCat();
+        if(choice == "standard")
+        {
+            imgSrc = cat.GetRandomCat();
+        }
+        else
+        {
+            imgSrc = cat.GetFilterCat(choice, customText, brightnessValue, saturationValue, hueValue, RedValue, GreenValue, BlueValue);
+        }
     }
 }
