@@ -22,40 +22,61 @@
 
 @if (choice == "custom")
 {
-    <label for="customRangeBrightness" class="form-label">Brightness</label>
-    <input type="range" class="form-range" id="customRangeBrightness" min="-100" max="100" @bind-value="@brightnessValue">
-    <label for="customRangeBrightness">@brightnessValue</label>
-    <br />
+    if(CustomChoice == "")
+    {
+        <select class="form-select form-select-lg mb-3" aria-label="Large select example"
+                @onchange="SelectedCustomChanged">
+            <option value="standard">Choose</option>
+            <option value="cust">BSH</option>
+            <option value="col">RGB</option>
+        </select>
+    }
 
-    <label for="customRangeSaturation" class="form-label">Saturation</label>
-    <input type="range" class="form-range" id="customRangeSaturation" min="-100" max="100" @bind-value="@saturationValue">
-    <label for="customRangeSaturation">@saturationValue</label>
-    <br />
+    if(CustomChoice == "cust")
+    {
+        <label for="customRangeBrightness" class="form-label">Brightness</label>
+        <input type="range" class="form-range" id="customRangeBrightness" min="-100" max="100" @bind-value="@brightnessValue" >
+        <label for="customRangeBrightness">@brightnessValue</label>
+        <br />
 
-    <label for="customRangeHue" class="form-label">Hue</label>
-    <input type="range" class="form-range" id="customRangeHue" min="-180" max="180" @bind-value="@hueValue">
-    <label for="customRangeHue">@hueValue</label>
-    <br />
+        <label for="customRangeSaturation" class="form-label">Saturation</label>
+        <input type="range" class="form-range" id="customRangeSaturation" min="-100" max="100" @bind-value="@saturationValue">
+        <label for="customRangeSaturation">@saturationValue</label>
+        <br />
+
+        <label for="customRangeHue" class="form-label">Hue</label>
+        <input type="range" class="form-range" id="customRangeHue" min="-180" max="180" @bind-value="@hueValue">
+        <label for="customRangeHue">@hueValue</label>
+        <br />
+
+        <button type="button" class="btn btn-danger" @onclick="@OnClickReset">Reset</button>
+        <br />
+    }
+
 
     <!--Coloring-->
-    <label for="customRangeRed" class="form-label">Red</label>
-    <input type="range" class="form-range" id="customRangeRed" min="0" max="255" @bind-value="@RedValue">
-    <label for="customRangeBrightness">@RedValue</label>
-    <br />
+    if(CustomChoice == "col")
+    {
+        <label for="customRangeRed" class="form-label">Red</label>
+        <input type="range" class="form-range" id="customRangeRed" min="0" max="255" @bind-value="@RedValue">
+        <label for="customRangeBrightness">@RedValue</label>
+        <br />
 
-    <label for="customRangeGreen" class="form-label">Green</label>
-    <input type="range" class="form-range" id="customRangeGreen" min="0" max="255" @bind-value="@GreenValue">
-    <label for="customRangeSaturation">@GreenValue</label>
-    <br />
+        <label for="customRangeGreen" class="form-label">Green</label>
+        <input type="range" class="form-range" id="customRangeGreen" min="0" max="255" @bind-value="@GreenValue">
+        <label for="customRangeSaturation">@GreenValue</label>
+        <br />
 
-    <label for="customRangeBlue" class="form-label">Blue</label>
-    <input type="range" class="form-range" id="customRangeBlue" min="0" max="255" @bind-value="@BlueValue">
-    <label for="customRangeBrightness">@BlueValue</label>
-    <br />
+        <label for="customRangeBlue" class="form-label">Blue</label>
+        <input type="range" class="form-range" id="customRangeBlue" min="0" max="255" @bind-value="@BlueValue">
+        <label for="customRangeBrightness">@BlueValue</label>
+        <br />
+
+        <button type="button" class="btn btn-danger" @onclick="@OnClickReset">Reset</button>
+        <br />
+    }
 }
 
-<label for="customText" class="form-label">Custom Text</label>
-<input type="text" class="form-control" id="customText" @bind-value="@customText">
 
 
 <!-- <img src="https://cataas.com/cat?filter=custom&hue=50" /> -->
@@ -64,11 +85,12 @@
 
     private string imgSrc = "https://www.brillen-sehhilfen.de/optik/image/weiss-white.png";
 
+    public string choice = "standard";
+    public string CustomChoice = "";
+
     public int brightnessValue = 0;
     public int saturationValue = 0;
     public int hueValue = 0;
-    public string customText = "";
-    public string choice = "standard";
 
     public int RedValue = 127;
     public int GreenValue = 127;
@@ -83,15 +105,31 @@
         }
     }
 
+    public void SelectedCustomChanged(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            CustomChoice = (string)e.Value;
+        }
+    }
+
+    public void OnClickReset()
+    {
+    CustomChoice = "";
+      
+    brightnessValue = 0;
+    saturationValue = 0;
+    hueValue = 0;
+
+    RedValue = 127;
+    GreenValue = 127;
+    BlueValue = 127;
+    }
+
     public void GeneratePic()
     {
-        if(choice == "standard")
-        {
-            imgSrc = cat.GetRandomCat();
-        }
-        else
-        {
-            imgSrc = cat.GetFilterCat(choice, customText, brightnessValue, saturationValue, hueValue, RedValue, GreenValue, BlueValue);
-        }
+
+        imgSrc = cat.GetFilterCat(choice, brightnessValue, saturationValue, hueValue, RedValue, GreenValue, BlueValue);
+        
     }
 }
