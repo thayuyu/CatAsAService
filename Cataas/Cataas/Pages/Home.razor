@@ -49,7 +49,14 @@
         <label for="customRangeHue">@hueValue</label>
         <br />
 
-        <button type="button" class="btn btn-danger" @onclick="@OnClickReset">Reset</button>
+        <div class="d-flex align-items-center">
+        <button type="button" class="btn btn-success" @onclick="@OnClickSubmitBSH">Submit</button>
+        </div>
+
+        <div class="d-flex align-items-center">
+            <button type="button" class="btn btn-danger" @onclick="@OnClickReset">Reset</button>
+        </div>
+
         <br />
     }
 
@@ -72,7 +79,13 @@
         <label for="customRangeBrightness">@BlueValue</label>
         <br />
 
-        <button type="button" class="btn btn-danger" @onclick="@OnClickReset">Reset</button>
+        <div class="d-flex align-items-center">
+            <button type="button" class="btn btn-success" @onclick="@OnClickSubmitRGB">Generate</button>
+        </div>
+
+        <div class="d-flex align-items-center">
+            <button type="button" class="btn btn-danger" @onclick="@OnClickReset">Reset</button>
+        </div>
         <br />
     }
 }
@@ -88,13 +101,13 @@
     public string choice = "standard";
     public string CustomChoice = "";
 
-    public int brightnessValue = 0;
-    public int saturationValue = 0;
-    public int hueValue = 0;
+    public int? brightnessValue = 0;
+    public int? saturationValue = 0;
+    public int? hueValue = 0;
 
-    public int RedValue = 127;
-    public int GreenValue = 127;
-    public int BlueValue = 127;
+    public int? RedValue = 127;
+    public int? GreenValue = 127;
+    public int? BlueValue = 127;
 
 
     public void SelectedChoiceChanged(ChangeEventArgs e)
@@ -111,6 +124,20 @@
         {
             CustomChoice = (string)e.Value;
         }
+    }
+
+    public void OnClickSubmitBSH()
+    {
+        RedValue = null;
+        GreenValue = null;
+        BlueValue = null;
+    }
+
+    public void OnClickSubmitRGB()
+    {
+        brightnessValue = null;
+        GreenValue = null;
+        BlueValue = null;
     }
 
     public void OnClickReset()
