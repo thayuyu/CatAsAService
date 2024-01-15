@@ -20,7 +20,7 @@
    
 </div>
 <div class="d-flex justify-content-center">
-<button @onclick="@GeneratePic">Generate Picture</button>
+<button type="button" class="btn btn-primary btn-lg" @onclick="@GeneratePic">Generate Picture</button>
 </div>
 
 <select class="form-select form-select-lg mb-3" aria-label="Large select example"
@@ -38,13 +38,15 @@
         <select class="form-select form-select-lg mb-3" aria-label="Large select example"
                 @onchange="SelectedCustomChanged">
             <option value="standard">Choose</option>
-            <option value="cust">BSH</option>
-            <option value="col">RGB</option>
+            <option value="BSH">BSH</option>
+            <option value="RGB">RGB</option>
         </select>
     }
 
-    if(CustomChoice == "cust")
+    <!--BSH-->
+    if(CustomChoice == "BSH")
     {
+
         <label for="customRangeBrightness" class="form-label">Brightness</label>
         <input type="range" class="form-range" id="customRangeBrightness" min="0" max="100" @bind-value="@brightnessValue" >
         <label for="customRangeBrightness">@brightnessValue</label>
@@ -60,20 +62,21 @@
         <label for="customRangeHue">@hueValue</label>
         <br />
 
-        <div class="d-flex align-items-center">
-        <button type="button" class="btn btn-success" @onclick="@OnClickGenerateBSH">Submit</button>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-outline-success m-3" @onclick="@OnClickSaveBSH">Save</button>
         </div>
 
-        <div class="d-flex align-items-center">
-            <button type="button" class="btn btn-danger" @onclick="@OnClickReset">Reset</button>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-outline-danger" @onclick="@OnClickReset">Reset</button>
         </div>
+
 
         <br />
     }
 
 
     <!--Coloring-->
-    if(CustomChoice == "col")
+    if(CustomChoice == "RGB")
     {
         <label for="customRangeRed" class="form-label">Red</label>
         <input type="range" class="form-range" id="customRangeRed" min="0" max="255" @bind-value="@RedValue">
@@ -90,12 +93,12 @@
         <label for="customRangeBrightness">@BlueValue</label>
         <br />
 
-        <div class="d-flex align-items-center">
-            <button type="button" class="btn btn-success" @onclick="@OnClickGenerateRGB">Generate</button>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-outline-success m-3" @onclick="@OnClickSaveRGB">Save</button>
         </div>
 
-        <div class="d-flex align-items-center">
-            <button type="button" class="btn btn-danger" @onclick="@OnClickReset">Reset</button>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-outline-danger" @onclick="@OnClickReset">Reset</button>
         </div>
         <br />
     }
@@ -138,7 +141,7 @@
         }
     }
 
-    public void OnClickGenerateBSH()
+    public void OnClickSaveBSH()
     {
         RedValue = null;
         GreenValue = null;
@@ -147,7 +150,7 @@
         GeneratePic();
     }
 
-    public void OnClickGenerateRGB()
+    public void OnClickSaveRGB()
     {
         brightnessValue = null;
         saturationValue = null;
