@@ -46,17 +46,17 @@
     if(CustomChoice == "cust")
     {
         <label for="customRangeBrightness" class="form-label">Brightness</label>
-        <input type="range" class="form-range" id="customRangeBrightness" min="-100" max="100" @bind-value="@brightnessValue" >
+        <input type="range" class="form-range" id="customRangeBrightness" min="0" max="100" @bind-value="@brightnessValue" >
         <label for="customRangeBrightness">@brightnessValue</label>
         <br />
 
         <label for="customRangeSaturation" class="form-label">Saturation</label>
-        <input type="range" class="form-range" id="customRangeSaturation" min="-100" max="100" @bind-value="@saturationValue">
+        <input type="range" class="form-range" id="customRangeSaturation" min="0" max="100" @bind-value="@saturationValue">
         <label for="customRangeSaturation">@saturationValue</label>
         <br />
 
         <label for="customRangeHue" class="form-label">Hue</label>
-        <input type="range" class="form-range" id="customRangeHue" min="-180" max="180" @bind-value="@hueValue">
+        <input type="range" class="form-range" id="customRangeHue" min="0" max="180" @bind-value="@hueValue">
         <label for="customRangeHue">@hueValue</label>
         <br />
 
@@ -111,9 +111,9 @@
     public string choice = "standard";
     public string CustomChoice = "";
 
-    public int? brightnessValue = 0;
-    public int? saturationValue = 0;
-    public int? hueValue = 0;
+    public int? brightnessValue = 50;
+    public int? saturationValue = 50;
+    public int? hueValue = 50;
 
     public int? RedValue = 0;
     public int? GreenValue = 0;
@@ -143,6 +143,8 @@
         RedValue = null;
         GreenValue = null;
         BlueValue = null;
+
+        GeneratePic();
     }
 
     public void OnClickGenerateRGB()
@@ -151,7 +153,7 @@
         saturationValue = null;
         hueValue = null;
 
-        //imgSrc = cat.GetCat();
+        GeneratePic();
     }
 
     public void OnClickReset()
@@ -170,13 +172,9 @@
     public async Task GeneratePic()
     {
         picture = await api.GetCat();
-        Console.WriteLine("Id: " + picture.ID);
-
-
 
         if (choice == "custom")
         {
-            link = $"&filter={choice}";
 
             if (RedValue == null || GreenValue == null || BlueValue == null)
             {
