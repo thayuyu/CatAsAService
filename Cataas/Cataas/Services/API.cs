@@ -1,5 +1,6 @@
 ﻿using Cataas.Model;
 using System.Net.Http.Json;
+using System.Security.AccessControl;
 
 namespace Cataas.Services
 {
@@ -29,49 +30,41 @@ namespace Cataas.Services
         /// <param name="Green">RGB option</param>
         /// <param name="Blue">RGB option</param>
         /// <returns>Object "Cat"</returns>
-        public async Task<Cat?> GetFilterCat(string Filter, int? Brightness, int? Saturation, int? Hue, int? Red, int? Green, int? Blue) 
+        public async Task<Cat?> GetCat(string Filter, int? Brightness, int? Saturation, int? Hue, int? Red, int? Green, int? Blue) 
         {
             Cat? cat = new();
+
             HttpClient client = new();
+
             client.BaseAddress = new Uri(Address);
 
+            string uri = $"?type={type}&width={width}&height={height}&json=true";
+
             if (Filter == "custom")
-            { 
+            {
+                uri += $"&filter={Filter}";
+
                 if (Red == null || Green == null || Blue == null)
-                { 
-                    HttpResponseMessage response = await client.GetAsync(requestUri: $"?type={type}&width={width}&height={height}&filter={Filter}&brightness={Brightness}&saturation={Saturation}&hue={Hue}&json=true");
-                    if (response.IsSuccessStatusCode)
-                    {
-                        cat = await response.Content.ReadFromJsonAsync<Cat>();
-                    }
+                {
+                    uri += $"&brightness={Brightness}&saturation={Saturation}&hue={Hue}";
                 }
                 else if (Brightness == null || Saturation == null || Hue == null)
                 {
-                    HttpResponseMessage response = await client.GetAsync(requestUri: $"?type={type}&width={width}&height={height}&filter={Filter}&r={Red}&g={Green}&b={Blue}&json=true");
-                    if (response.IsSuccessStatusCode)
-                    {
-                        cat = await response.Content.ReadFromJsonAsync<Cat>();
-                    }
+                    uri += $"&r={Red}&g={Green}&b={Blue}";
                 }
             }
             else if (Filter == "mono" || Filter == "negate")
             {
-                HttpResponseMessage response = await client.GetAsync(requestUri: $"?type={type}&width={width}&height={height}&filter={Filter}&json=true");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    cat = await response.Content.ReadFromJsonAsync<Cat>();
-                }
+                uri += $"&filter={Filter}";
             }
-            else if (Filter == "standard")
-            {
-                 HttpResponseMessage response = await client.GetAsync(requestUri: $"?type={type}&width={width}&height={height}&json=true");
 
-                 if (response.IsSuccessStatusCode)
-                 {
-                    cat = await response.Content.ReadFromJsonAsync<Cat>();
-                 }
+            HttpResponseMessage response = await client.GetAsync(requestUri: uri);
+
+            if (response.IsSuccessStatusCode) 
+            { 
+                cat = await response.Content.ReadFromJsonAsync<Cat>();
             }
+
             return cat;
         }
     }
