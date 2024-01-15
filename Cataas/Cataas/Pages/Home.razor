@@ -1,11 +1,22 @@
 ﻿@using Services
+@using Model
 @page "/"
 
 <PageTitle>Cataas</PageTitle>
 
 <div class="d-flex justify-content-center">
-    <img src="@imgSrc" height="500" width="500" class="border border-black"/>
-    <br />
+  
+    @if (link == null)
+    {
+        <img src="@imgSrc" height="500" width="500" class="border border-black" />
+        <br />
+    }
+    else
+    {
+        <img src="@link" height="500" width="500" class="border border-black" />
+        <br />
+    }
+
    
 </div>
 <div class="d-flex justify-content-center">
@@ -37,18 +48,18 @@
     {
 
         <label for="customRangeBrightness" class="form-label">Brightness</label>
-        <input type="range" class="form-range" id="customRangeBrightness" min="-100" max="100" @bind-value="@brightnessValue" >
-        <label for="customRangeBrightness" class="">@brightnessValue</label>
+        <input type="range" class="form-range" id="customRangeBrightness" min="0" max="100" @bind-value="@brightnessValue" >
+        <label for="customRangeBrightness">@brightnessValue</label>
         <br />
 
         <label for="customRangeSaturation" class="form-label">Saturation</label>
-        <input type="range" class="form-range" id="customRangeSaturation" min="-100" max="100" @bind-value="@saturationValue">
-        <label for="customRangeSaturation" class="">@saturationValue</label>
+        <input type="range" class="form-range" id="customRangeSaturation" min="0" max="100" @bind-value="@saturationValue">
+        <label for="customRangeSaturation">@saturationValue</label>
         <br />
 
         <label for="customRangeHue" class="form-label">Hue</label>
-        <input type="range" class="form-range" id="customRangeHue" min="-180" max="180" @bind-value="@hueValue">
-        <label for="customRangeHue" class="">@hueValue</label>
+        <input type="range" class="form-range" id="customRangeHue" min="0" max="180" @bind-value="@hueValue">
+        <label for="customRangeHue">@hueValue</label>
         <br />
 
         <div class="d-flex justify-content-center">
@@ -94,24 +105,25 @@
 }
 
 
-
 <!-- <img src="https://cataas.com/cat?filter=custom&hue=50" /> -->
 @code {
-    API cat = new();
+    API api = new();
 
     private string imgSrc = "https://www.brillen-sehhilfen.de/optik/image/weiss-white.png";
 
     public string choice = "standard";
     public string CustomChoice = "";
 
-    public int? brightnessValue = 0;
-    public int? saturationValue = 0;
-    public int? hueValue = 0;
-    
+    public int? brightnessValue = 50;
+    public int? saturationValue = 50;
+    public int? hueValue = 50;
+
     public int? RedValue = 0;
     public int? GreenValue = 0;
     public int? BlueValue = 0;
 
+    Cat? picture;
+    string link = null;
 
     public void SelectedChoiceChanged(ChangeEventArgs e)
     {
@@ -134,6 +146,8 @@
         RedValue = null;
         GreenValue = null;
         BlueValue = null;
+
+        GeneratePic();
     }
 
     public void OnClickSaveRGB()
@@ -142,26 +156,46 @@
         saturationValue = null;
         hueValue = null;
 
-        //imgSrc = cat.GetCat();
+        GeneratePic();
     }
 
     public void OnClickReset()
     {
-    CustomChoice = "";
-      
-    brightnessValue = 0;
-    saturationValue = 0;
-    hueValue = 0;
+        CustomChoice = "";
 
-    RedValue = 0;
-    GreenValue = 0;
-    BlueValue = 0;
+        brightnessValue = 0;
+        saturationValue = 0;
+        hueValue = 0;
+
+        RedValue = 0;
+        GreenValue = 0;
+        BlueValue = 0;
     }
 
-    public void GeneratePic()
+    public async Task GeneratePic()
     {
+        picture = await api.GetCat();
 
-        // imgSrc = cat.GetFilterCat(choice, brightnessValue, saturationValue, hueValue, RedValue, GreenValue, BlueValue);
-        
+        if (choice == "custom")
+        {
+
+            if (RedValue == null || GreenValue == null || BlueValue == null)
+            {
+                link = $"https://cataas.com/cat/{picture.ID}?filter={choice}&brightness={brightnessValue}&saturation={saturationValue}&hue={hueValue}";
+            }
+            else if (brightnessValue == null || saturationValue == null || hueValue == null)
+            {
+                link = $"https://cataas.com/cat/{picture.ID}?filter={choice}&r={RedValue}&g={GreenValue}&b={BlueValue}";
+            }
+        }
+        else if (choice == "mono" || choice == "negate")
+        {
+            link = $"https://cataas.com/cat/{picture.ID}?filter={choice}";
+        }
+        else
+        {
+            link = $"https://cataas.com/cat/{picture.ID}";
+        }
+
     }
 }

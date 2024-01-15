@@ -5,7 +5,7 @@ namespace Cataas.Model
     public class Cat
     {
         [JsonPropertyName("_id")]
-        public string _id;
+        public string ID { get; set; }
     }
 }
  

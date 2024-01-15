@@ -22,6 +22,7 @@ namespace Cataas.Services
         {
             Cat? cat = new();
 
+
             HttpClient client = new();
 
             client.BaseAddress = new Uri(Address);
