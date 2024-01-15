@@ -1,4 +1,7 @@
-﻿namespace Cataas.Services
+﻿using Cataas.Model;
+using System.Net.Http.Json;
+
+namespace Cataas.Services
 {
     public class API
     {
@@ -14,80 +17,62 @@
         // Constructor
         public API() { }
 
-        // Get a random cat without filters
-        public string GetRandomCat()
-        {
-            
-            return $"{Address}?type={type}&width={width}&height={height}";
-        }
-        
+      
         /// <summary>
         /// 
         /// </summary>
         /// <param name="Filter">Mono, Negate or Custom</param>
-        /// <param name="Says">Text that will be shown on the picture</param>
         /// <param name="Brightness">Brightness of the picture</param>
         /// <param name="Saturation">Saturation of the picture</param>
         /// <param name="Hue">Hue of the picture</param>
         /// <param name="Red">RGB option</param>
         /// <param name="Green">RGB option</param>
         /// <param name="Blue">RGB option</param>
-        /// <returns>Link of a random filtered cat picture</returns>
-        public string GetFilterCat(string Filter, string? Says, int? Brightness, int? Saturation, int? Hue, int? Red, int? Green, int? Blue) 
+        /// <returns>Object "Cat"</returns>
+        public async Task<Cat?> GetFilterCat(string Filter, int? Brightness, int? Saturation, int? Hue, int? Red, int? Green, int? Blue) 
         {
-            if (width == 500)
-            {
-                width = 501;
-            }
-            else
-            {
-                width = 500;
-            }
-            if (Says == "")
-            {
-                if (Filter == "custom")
-                {
-                    if (Red == null || Green == null || Blue == null) 
+            Cat? cat = new();
+            HttpClient client = new();
+            client.BaseAddress = new Uri(Address);
+
+            if (Filter == "custom")
+            { 
+                if (Red == null || Green == null || Blue == null)
+                { 
+                    HttpResponseMessage response = await client.GetAsync(requestUri: $"?type={type}&width={width}&height={height}&filter={Filter}&brightness={Brightness}&saturation={Saturation}&hue={Hue}&json=true");
+                    if (response.IsSuccessStatusCode)
                     {
-                        return Address + $"?type={type}&width={width}&height={height}&filter={Filter}&brightness={Brightness}&saturation={Saturation}&hue={Hue}";
-                    }
-                    else if (Brightness == null || Saturation == null || Hue == null)
-                    {
-                        return Address + $"?type={type}&width={width}&height={height}&filter={Filter}&r={Red}&g={Green}&b={Blue}";
+                        cat = await response.Content.ReadFromJsonAsync<Cat>();
                     }
                 }
-                else if (Filter == "mono" || Filter == "negate")
+                else if (Brightness == null || Saturation == null || Hue == null)
                 {
-                    return Address + $"?type={type}&width={width}&height={height}&filter={Filter}";
-                }
-                else if (Filter == "standard")
-                {
-                    GetRandomCat();
+                    HttpResponseMessage response = await client.GetAsync(requestUri: $"?type={type}&width={width}&height={height}&filter={Filter}&r={Red}&g={Green}&b={Blue}&json=true");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        cat = await response.Content.ReadFromJsonAsync<Cat>();
+                    }
                 }
             }
-            else if (Says != "")
+            else if (Filter == "mono" || Filter == "negate")
             {
-                if (Filter == "custom")
+                HttpResponseMessage response = await client.GetAsync(requestUri: $"?type={type}&width={width}&height={height}&filter={Filter}&json=true");
+
+                if (response.IsSuccessStatusCode)
                 {
-                    if (Red == null || Green == null || Blue == null)
-                    {
-                        return Address + $"/says/{Says}" + $"?type={type}&width={width}&height={height}&filter={Filter}&brightness={Brightness}&saturation={Saturation}&hue={Hue}";
-                    }
-                    else if (Brightness == null || Saturation == null || Hue == null)
-                    {
-                        return Address + $"/says/{Says}" + $"?type={type}&width={width}&height={height}&filter={Filter}&r={Red}&g={Green}&b={Blue}";
-                    }
-                }
-                else if (Filter == "mono" || Filter == "negate")
-                {
-                    return Address + $"/says/{Says}" + $"?type={type}&width={width}&height={height}&filter={Filter}";
-                }
-                else if (Filter == "standard")
-                {
-                    GetRandomCat();
+                    cat = await response.Content.ReadFromJsonAsync<Cat>();
                 }
             }
-            return "https://i.pinimg.com/736x/24/57/04/24570452fbe5544aaf0cae82cab47449.jpg";
+            else if (Filter == "standard")
+            {
+                 HttpResponseMessage response = await client.GetAsync(requestUri: $"?type={type}&width={width}&height={height}&json=true");
+
+                 if (response.IsSuccessStatusCode)
+                 {
+                    cat = await response.Content.ReadFromJsonAsync<Cat>();
+                 }
+            }
+            return cat;
         }
     }
 }
