@@ -8,12 +8,6 @@ namespace Cataas.Services
     {
         // main URL
         private string Address = "https://cataas.com/cat";
-        // constant variables
-        // type of the picture
-        private const string type = "square";
-        // width and height 
-        private int width = 500;
-        private const int height = 500;
 
         // Constructor
         public API() { }

@@ -5,14 +5,14 @@
 <PageTitle>Cataas</PageTitle>
 
 <div class="d-flex justify-content-center">
-    <h1>Cat as a Service</h1>
+    <h1>Cat As A Service</h1>
 </div>
 
 <div class="d-flex justify-content-center">
   
     @if (link == null)
     {
-        <img src="@imgSrc" height="500" width="500" class="border border-4" />
+        <img src="@Placeholder" height="500" width="500" class="border border-4" />
         <br />
     }
     else
@@ -35,7 +35,7 @@
         <option value="negate">Negate</option>
         <option value="custom">Custom</option>
     </select>
-</div
+</div>
 
 @if (choice == "custom")
 {
@@ -47,6 +47,8 @@
                 <option value="standard">Choose</option>
                 <option value="BSH">BSH</option>
                 <option value="RGB">RGB</option>
+                <option value="custom text">Add Caption</option>
+
             </select>
         </div>
     }
@@ -129,6 +131,28 @@
         </div>
         <br />
     }
+
+
+    @if (CustomChoice == "custom text")
+    {
+      <div class="d-flex justify-content-center">
+      <label>What should the caption be?</label>
+      </div>
+
+
+      <div class="d-flex justify-content-center">
+            <div class="w-50 p-3">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Text</span>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" @bind-value="@text">
+                </div>
+            </div>
+      </div>
+      
+      <div class="d-flex justify-content-center">
+         <button type="button" class="btn btn-outline-danger" @onclick="@OnClickReset">Reset</button>
+      </div>
+    }
 }
 
 
@@ -136,7 +160,7 @@
 @code {
     API api = new();
 
-    private string imgSrc = "https://www.brillen-sehhilfen.de/optik/image/weiss-white.png";
+    private string Placeholder = "https://www.brillen-sehhilfen.de/optik/image/weiss-white.png";
 
     public string choice = "standard";
     public string CustomChoice = "";
@@ -149,8 +173,12 @@
     public int? GreenValue = 0;
     public int? BlueValue = 0;
 
+    public string? text;
+
+    public string baseAddress = "";
+
     Cat? picture;
-    string link = null;
+    string? link = null;
 
     public void SelectedChoiceChanged(ChangeEventArgs e)
     {
@@ -168,22 +196,22 @@
         }
     }
 
-    public void OnClickSaveBSH()
+    public async void OnClickSaveBSH()
     {
         RedValue = null;
         GreenValue = null;
         BlueValue = null;
 
-        GeneratePic();
+        await GeneratePic();
     }
 
-    public void OnClickSaveRGB()
+    public async void OnClickSaveRGB()
     {
         brightnessValue = null;
         saturationValue = null;
         hueValue = null;
 
-        GeneratePic();
+        await GeneratePic();
     }
 
     public void OnClickReset()
@@ -197,32 +225,53 @@
         RedValue = 0;
         GreenValue = 0;
         BlueValue = 0;
+
+        text = null;
     }
 
     public async Task GeneratePic()
     {
+
+        baseAddress = "https://cataas.com/cat/";
+
         picture = await api.GetCat();
+
+        string catsays = $"/says/{text}";
+
+        baseAddress += picture.ID;
+ 
+        if (picture == null)
+        {
+            Console.WriteLine("it no no wanna work");
+        }
+
 
         if (choice == "custom")
         {
-
             if (RedValue == null || GreenValue == null || BlueValue == null)
             {
-                link = $"https://cataas.com/cat/{picture.ID}?filter={choice}&brightness={brightnessValue}&saturation={saturationValue}&hue={hueValue}";
+                link = $"{baseAddress}?filter={choice}&brightness={brightnessValue}&saturation={saturationValue}&hue={hueValue}";
             }
             else if (brightnessValue == null || saturationValue == null || hueValue == null)
             {
-                link = $"https://cataas.com/cat/{picture.ID}?filter={choice}&r={RedValue}&g={GreenValue}&b={BlueValue}";
+                link = $"{baseAddress}?filter={choice}&r={RedValue}&g={GreenValue}&b={BlueValue}";
+            }
+            else if (text is not null)
+            {
+                link = $"{baseAddress}{catsays}?fontColor=%23FFF?fontBackground=1";
+            }
+            else
+            {
+                link = $"{baseAddress}";
             }
         }
         else if (choice == "mono" || choice == "negate")
         {
-            link = $"https://cataas.com/cat/{picture.ID}?filter={choice}";
+            link = $"{baseAddress}?filter={choice}";
         }
         else
         {
-            link = $"https://cataas.com/cat/{picture.ID}";
+            link = $"{baseAddress}";
         }
-
     }
 }
