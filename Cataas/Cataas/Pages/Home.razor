@@ -156,7 +156,6 @@
 }
 
 
-<!-- <img src="https://cataas.com/cat?filter=custom&hue=50" /> -->
 @code {
     API api = new();
 
@@ -176,6 +175,8 @@
     public string? text;
 
     public string baseAddress = "";
+
+    public int? fontSize = null;
 
     Cat? picture;
     string? link = null;
